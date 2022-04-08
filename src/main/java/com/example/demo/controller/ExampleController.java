@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +9,6 @@ public class ExampleController {
 
     @RequestMapping("/example")
     public String index() {
-        return "index.html";
+        return "example";
     }
 }
