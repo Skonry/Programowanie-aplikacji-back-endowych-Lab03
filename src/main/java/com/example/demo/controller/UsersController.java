@@ -1,43 +1,57 @@
 package com.example.demo.controller;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.example.demo.entity.UserEntity;
+import com.example.demo.service.UsersService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class UsersController {
-    private Map<Integer, UserEntity> users = new HashMap<>();
 
-    @RequestMapping("/users")
+    @Autowired
+    private UsersService usersService;
+
+    @RequestMapping("api/users")
     @ResponseBody
-    public Map<Integer, UserEntity> index() {
-        return users;
+    public List<UserEntity> index(
+        @RequestParam(name = "page-number", required = false) int pageNumber,
+        @RequestParam(name = "page-number", required = false) int pageSize
+    ) {
+        return usersService.index(pageNumber, pageSize);
     }
 
-    @RequestMapping("/users/{id}/get")
-    @ResponseBody
-    public UserEntity get(@PathVariable Integer id) {
-        return users.get(id);
+    @RequestMapping(
+        value = "api/users/create",
+        method = RequestMethod.POST,
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public UserEntity create(@RequestBody UserEntity user) {
+        return usersService.create(user);
     }
 
-    @RequestMapping("/users/{id}/remove")
-    @ResponseBody
-    public void remove(@PathVariable Integer id) {
-        users.remove(id);
-
-        return;
+    @RequestMapping("api/users/{id}")
+    public UserEntity show(@PathVariable int id) {
+        return usersService.show(id);
     }
 
-    @RequestMapping("/users/add")
-    @ResponseBody
-    public int add(@RequestParam String name, @RequestParam Integer age) {
-        int userId = users.size() + 1;
+    @RequestMapping(
+        value = "api/users/{id}/update",
+        method = RequestMethod.POST,
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public UserEntity update(@RequestBody UserEntity user) {
+        return usersService.update(user);
+    }
 
-        users.put(userId, new UserEntity(name, age));
-
-        return userId;
+    @RequestMapping("api/users/{id}/remove")
+    public UserEntity remove(@PathVariable int id) {
+        return usersService.remove(id);
     }
 }
